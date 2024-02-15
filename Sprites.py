@@ -26,6 +26,7 @@ class Player(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+        self.money(0)
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -74,6 +75,10 @@ class Player(pg.sprite.Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, self.game.coins, kill)
+        if hits:
+            return True
 # Update the player,speed and collisons
     def update(self):
          self.get_keys()
@@ -83,6 +88,11 @@ class Player(pg.sprite.Sprite):
          self.collide_with_walls('x')
          self.rect.y = self.y
          self.collide_with_walls('y')
+         if self.collide_with_group(self.game.coins, True):
+             self.money +=1
+         if coin_hits = pg.sprite.spritecollide(self, self.game.coins, True):
+
+             
 # defines a class "wall" in the group Sprites
 class Wall(pg.sprite.Sprite):
 # Initiates the size, color, and where it is
@@ -98,3 +108,17 @@ class Wall(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+
+class Coin(pg.sprite.Sprite):
+# Initiates the size, color, and where it is
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE

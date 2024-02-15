@@ -52,6 +52,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         # Puts walls into the group
         self.walls=pg.sprite.Group()
+        self.coins=pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -59,6 +60,11 @@ class Game:
                 if tile == '1':
                     print("a wall at", row, col)
                     Wall(self, col, row)
+                if tile == 'P':
+                    self.player1 = Player(self, col, row)
+                if tile == 'C':
+                    print("a coin at", col, row)
+                    Coin(self, col,row)
         # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
