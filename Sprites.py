@@ -26,7 +26,7 @@ class Player(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        self.money(0)
+        self.moneybag = 0
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -79,7 +79,8 @@ class Player(pg.sprite.Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
-                self.money += 1
+                self.moneybag += 1
+
 # Update the player,speed and collisons
     def update(self):
         self.get_keys()
@@ -96,6 +97,7 @@ class Player(pg.sprite.Sprite):
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")
+       
 # defines a class "wall" in the group Sprites
 class Wall(pg.sprite.Sprite):
 # Initiates the size, color, and where it is
@@ -113,12 +115,11 @@ class Wall(pg.sprite.Sprite):
 
 
 class Coin(pg.sprite.Sprite):
-# Initiates the size, color, and where it is
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.coins
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.x = x
