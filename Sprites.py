@@ -76,23 +76,26 @@ class Player(pg.sprite.Sprite):
                 self.vy = 0
                 self.rect.y = self.y
     def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, self.game.coins, kill)
+        hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            return True
+            if str(hits[0].__class__.__name__) == "Coin":
+                self.money += 1
 # Update the player,speed and collisons
     def update(self):
-         self.get_keys()
-         self.x += self.vx * self.game.dt
-         self.y += self.vy * self.game.dt
-         self.rect.x = self.x
-         self.collide_with_walls('x')
-         self.rect.y = self.y
-         self.collide_with_walls('y')
-         if self.collide_with_group(self.game.coins, True):
-             self.money +=1
-         if coin_hits = pg.sprite.spritecollide(self, self.game.coins, True):
-
-             
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        # add collision later
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        # add collision later
+        self.collide_with_walls('y')
+        self.collide_with_group(self.game.coins, True)
+          
+        # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
+        # if coin_hits:
+        #     print("I got a coin")
 # defines a class "wall" in the group Sprites
 class Wall(pg.sprite.Sprite):
 # Initiates the size, color, and where it is
