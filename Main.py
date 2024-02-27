@@ -53,6 +53,8 @@ class Game:
         # Puts walls into the group
         self.walls=pg.sprite.Group()
         self.coins=pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
+        self.power_ups = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -65,6 +67,9 @@ class Game:
                 if tile == 'C':
                     print("a coin at", col, row)
                     Coin(self, col,row)
+                if tile == 'S':
+                    print("a power up at", col, row)
+                    PowerUp(self, col,row)
         # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
@@ -93,13 +98,25 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (x,0), (x,HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
             pg.draw.line(self.screen, LIGHTGREY, (0,y), (WIDTH,y))
+
+    def draw_text(self, surface, text, size, color, x, y):
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (x*TILESIZE,y*TILESIZE)
+        surface.blit(text_surface, text_rect)
+
+
     def draw(self):
         # Fill screen with color
         self.screen.fill(BGCOLOR)
         # draw grid
-        self.draw_grid()
+        # self.draw_grid()
         # Draw all sprites
         self.all_sprites.draw(self.screen)
+        # Draws the numerical value that is "moneybag" with the color and location.
+        self.draw_text(self.screen, str(self.player1.moneybag), 64, WHITE, 1, 1)
         pg.display.flip()
     def events(self):
         # Quit the game when hit x
