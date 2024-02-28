@@ -81,8 +81,8 @@ class Player(pg.sprite.Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
-            if str(hits[0].__class__.__name__) == "Power up":
-                self.speed +=100
+            if str(hits[0].__class__.__name__) == "PowerUp":
+                self.speed += 300
                 
 # Update the player,speed and collisons
     def update(self):
