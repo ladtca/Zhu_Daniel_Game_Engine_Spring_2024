@@ -1,5 +1,14 @@
 # This File was created by: Daniel Zhu
+'''
 
+Moving Enemy
+Projectile
+DIfferent levels/maps
+
+
+
+
+'''
 # Imports pygame as a shorter way to say it, also imports the values from a different tab called "Settings"
 import pygame as pg
 from Settings import *
