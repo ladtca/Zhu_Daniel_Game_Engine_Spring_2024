@@ -124,8 +124,6 @@ class Game:
         # self.draw_grid()
         # Draw all sprites
         self.all_sprites.draw(self.screen)
-        # Draws the numerical value that is "moneybag" with the color and location.
-        self.draw_text(self.screen, str(self.player1.moneybag), 64, WHITE, 1, 1)
         pg.display.flip()
     def events(self):
         # Quit the game when hit x
