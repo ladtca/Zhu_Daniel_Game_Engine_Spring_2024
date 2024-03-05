@@ -79,6 +79,9 @@ class Game:
                 if tile == 'S':
                     print("a power up at", col, row)
                     PowerUp(self, col,row)
+                if tile == 'M':
+                    print("a mob at", col, row)
+                    Mob(self, col, row)
         # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
@@ -115,6 +118,13 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x*TILESIZE,y*TILESIZE)
         surface.blit(text_surface, text_rect)
+    def draw(self):
+            self.screen.fill(BGCOLOR)
+            self.draw_grid()
+            self.all_sprites.draw(self.screen)
+            self.draw_text(self.screen, str(self.player1.HITPOINTS), 64, WHITE, 2, 2)
+
+            pg.display.flip()
 
 
     def draw(self):

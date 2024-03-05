@@ -5,12 +5,7 @@
 import pygame as pg
 from Settings import *
 
-HITPOINTS = 100
-def set_hitpoints():
-    global HITPOINTS
-    hitpoints = 100
 
-print(HITPOINTS)
 #defines a class "player" in the group sprites
 class Player(pg.sprite.Sprite):
 # initiate the size, the color, and where it is.
@@ -28,6 +23,7 @@ class Player(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE
         self.moneybag = 0
         self.speed = 300
+        self.HITPOINTS = 100
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -82,7 +78,10 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "Coin":
                 self.moneybag += 1
             if str(hits[0].__class__.__name__) == "PowerUp":
-                self.speed += 300
+                "give gun for projectile"
+            if str(hits[0].__class__.__name__) == "Mob":
+                print("Collided with mob/ game over")
+                self.HITPOINTS += -100
                 
 # Update the player,speed and collisons
     def update(self):
@@ -97,6 +96,10 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
+        self.collide_with_group(self.game.mobs, False)
+        if self.HITPOINTS == 0:
+            quit()
+
           
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
@@ -143,3 +146,22 @@ class PowerUp(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+class Mob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        self.speed = 0.5
+    def update(self):
+        self.rect.x += TILESIZE * self.speed
+        if self.rect.x > WIDTH-1 or self.rect.x < 1:
+            self.speed *= -1
+
