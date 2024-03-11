@@ -64,6 +64,7 @@ class Game:
         self.coins=pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
+        self.pew_pews = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             print(row)
             for col, tile in enumerate(tiles):
@@ -118,13 +119,8 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x*TILESIZE,y*TILESIZE)
         surface.blit(text_surface, text_rect)
-    def draw(self):
-            self.screen.fill(BGCOLOR)
-            self.draw_grid()
-            self.all_sprites.draw(self.screen)
-            self.draw_text(self.screen, str(self.player1.HITPOINTS), 64, WHITE, 2, 2)
+    
 
-            pg.display.flip()
 
 
     def draw(self):
@@ -135,6 +131,22 @@ class Game:
         # Draw all sprites
         self.all_sprites.draw(self.screen)
         pg.display.flip()
+    def show_start_screen(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the start screen", 24, WHITE, WIDTH/2 - 32, 2)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting = False
     def events(self):
         # Quit the game when hit x
         for event in pg.event.get():
@@ -157,7 +169,8 @@ class Game:
 #  Instatiate game
 g = Game()
 # Use game method to run the game
-# g.show_start_screen()
+g.show_start_screen()
+
 while True:
     g.new() 
     g.run()

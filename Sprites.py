@@ -24,6 +24,7 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 300
         self.HITPOINTS = 100
+
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -36,9 +37,16 @@ class Player(pg.sprite.Sprite):
             self.vy = -self.speed  
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+        if keys[pg.K_e]:
+            print("trying to shoot...")
+            self.pew()
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+    def pew(self):
+        p = PewPew(self.game, self.rect.x, self.rect.y)
+        print(p.rect.x)
+        print(p.rect.y)
 
             
 # moves where the sprite is
@@ -82,7 +90,9 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "Mob":
                 print("Collided with mob/ game over")
                 self.HITPOINTS += -100
-                
+
+
+
 # Update the player,speed and collisons
     def update(self):
         self.get_keys()
@@ -97,6 +107,7 @@ class Player(pg.sprite.Sprite):
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
         self.collide_with_group(self.game.mobs, False)
+
         if self.HITPOINTS == 0:
             quit()
 
@@ -157,11 +168,48 @@ class Mob(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
+        self.vx, self.vy = 100, 100
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
         self.speed = 0.5
+    def collide_with_walls(self, dir):
+        if dir == 'x':
+            # print('colliding on the x')
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                self.vx *= -1
+                self.rect.x = self.x
     def update(self):
+        # self.rect.x += 1
         self.rect.x += TILESIZE * self.speed
         if self.rect.x > WIDTH-1 or self.rect.x < 1:
             self.speed *= -1
+        self.rect.x = self.x
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        self.collide_with_walls('y')
 
+
+class PewPew(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.pew_pews
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE/4, TILESIZE/4))
+        self.image.fill(ORANGE)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = 10
+        print("I created a pew pew...")
+    def collide_with_group(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        # if hits:
+        #     if str(hits[0].__class__.__name__) == "Coin":
+        #         self.moneybag += 1
+    def update(self):
+        self.collide_with_group(self.game.mobs, True)
+        self.rect.x -= -self.speed
+        # pass
