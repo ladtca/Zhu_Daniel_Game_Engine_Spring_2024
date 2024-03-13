@@ -22,7 +22,7 @@ class Player(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.moneybag = 0
-        self.speed = 300
+        self.speed = 600
         self.HITPOINTS = 100
 
     # Game loop, IPO, if key pressed, velocity
@@ -43,6 +43,9 @@ class Player(pg.sprite.Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+        if keys[pg.K_f]:
+            print("trying to mine")
+            self.mine()
     def pew(self):
         p = PewPew(self.game, self.rect.x, self.rect.y)
         print(p.rect.x)
@@ -179,11 +182,18 @@ class Mob(pg.sprite.Sprite):
             if hits:
                 self.vx *= -1
                 self.rect.x = self.x
+        if dir == 'y':
+            # print('colliding on the y')
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                self.vy *= -1
+                self.rect.y = self.y
     def update(self):
         # self.rect.x += 1
         self.rect.x += TILESIZE * self.speed
         if self.rect.x > WIDTH-1 or self.rect.x < 1:
             self.speed *= -1
+        
         self.rect.x = self.x
         self.collide_with_walls('x')
         self.rect.y = self.y
@@ -202,7 +212,7 @@ class PewPew(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
-        self.speed = 10
+        self.speed = 25
         print("I created a pew pew...")
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
@@ -213,3 +223,5 @@ class PewPew(pg.sprite.Sprite):
         self.collide_with_group(self.game.mobs, True)
         self.rect.x -= -self.speed
         # pass
+class Pickaxe(pg.sprite.Sprite):
+    def __init__(self, game, x, y):

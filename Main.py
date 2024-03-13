@@ -17,7 +17,8 @@ from Sprites import *
 import sys
 from os import path
 
-
+LEVEL1 = "level1.txt"
+LEVEL2 = "level2.txt"
 #create/define function "Game"
 class Game:
     # Allows us to assign properties to the class
@@ -31,28 +32,50 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
     def load_data(self):
-        game_folder = path.dirname(__file__)
-        self.map_data = []
-        # 'r'     open for reading (default)
-        # 'w'     open for writing, truncating the file first
-        # 'x'     open for exclusive creation, failing if the file already exists
-        # 'a'     open for writing, appending to the end of the file if it exists
-        # 'b'     binary mode
-        # 't'     text mode (default)
-        # '+'     open a disk file for updating (reading and writing)
-        # 'U'     universal newlines mode (deprecated)
-        # below opens file for reading in text mode
-        # with 
-        '''
-        The with statement is a context manager in Python. 
-        It is used to ensure that a resource is properly closed or released 
-        after it is used. This can help to prevent errors and leaks.
-        '''
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
+       self.game_folder = path.dirname(__file__)
+       self.map_data = []
+       with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
-    
+
+    def test_method(self):
+        print("I can be called from Sprites...")
+    # added level change method
+    def change_level(self, lvl):
+        # kill all existing sprites first to save memory
+        for s in self.all_sprites:
+            s.kill()
+        # reset criteria for changing level
+        self.player1.moneybag = 0
+        # reset map data list to empty
+        self.map_data = []
+        # open next level
+        with open(path.join(self.game_folder, lvl), 'rt') as f:
+            for line in f:
+                print(line)
+                self.map_data.append(line)
+        # repopulate the level with stuff
+        for row, tiles in enumerate(self.map_data):
+            print(row)
+            for col, tile in enumerate(tiles):
+                print(col)
+                if tile == '1':
+                    print("a wall at", row, col)
+                    Wall(self, col, row)
+                if tile == 'P':
+                    self.player1 = Player(self, col, row)
+                if tile == 'C':
+                    Coin(self, col, row)
+                if tile == 'M':
+                    Mob(self, col, row)
+                if tile == 'S':
+                    PowerUp(self, col, row)
+        self.player1 = Player(self, 100, 100)
+        # Puts "player" into "all sprites"
+        self.all_sprites.add(self.player1)
+        for x in range(10,20):
+            Wall(self, x, 5)       
 
 # creates a way to run the game.
     # defines the methow new.
@@ -105,6 +128,8 @@ class Game:
     
     def update(self):
         self.all_sprites.update()
+        if self.player1.moneybag > 0:
+            self.change_level(LEVEL2)
 # Sets the color and size of each tile for the grid.
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
