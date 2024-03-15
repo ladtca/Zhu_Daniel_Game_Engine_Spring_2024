@@ -63,8 +63,8 @@ class Game:
                 if tile == '1':
                     print("a wall at", row, col)
                     Wall(self, col, row)
-                if tile == 'P':
-                    self.player1 = Player(self, col, row)
+                # if tile == 'P':
+                #     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'M':
@@ -87,6 +87,7 @@ class Game:
         self.coins=pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
+        self.weapons = pg.sprite.Group()
         self.pew_pews = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             print(row)
@@ -95,8 +96,8 @@ class Game:
                 if tile == '1':
                     print("a wall at", row, col)
                     Wall(self, col, row)
-                if tile == 'P':
-                    self.player1 = Player(self, col, row)
+                # if tile == 'P':
+                #     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     print("a coin at", col, row)
                     Coin(self, col,row)
@@ -172,6 +173,9 @@ class Game:
                     self.quit()
                 if event.type == pg.KEYUP:
                     waiting = False
+                    if event.key == pg.K_e:
+                        self.player.weapon_drawn = False
+
     def events(self):
         # Quit the game when hit x
         for event in pg.event.get():
