@@ -92,8 +92,8 @@ class Player(pg.sprite.Sprite):
                 self.moneybag += 1
             if str(hits[0].__class__.__name__) == "PowerUp":
                 "give gun for projectile"
-            if str(hits[0].__class__.__name__) == "Mob":
-                print("Collided with mob/ game over")
+            if str(hits[0].__class__.__name__) == "Magmawall":
+                print("Collided with wall/ game over")
                 self.HITPOINTS += -100
 
 
@@ -111,7 +111,7 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
-        self.collide_with_group(self.game.mobs, False)
+        self.collide_with_group(self.game.magmawall, False)
 
         if self.HITPOINTS == 0:
             quit()
@@ -150,22 +150,22 @@ class Coin(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
-class PowerUp(pg.sprite.Sprite):
+# class PowerUp(pg.sprite.Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites, game.power_ups
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(ORANGE)
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x * TILESIZE
+#         self.rect.y = y * TILESIZE
+# Makes the mob thingy and creates it size and other characteristics.
+class Magmawall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.power_ups
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(ORANGE)
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class Mob(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.mobs
+        self.groups = game.all_sprites, game.magmawall
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -201,7 +201,7 @@ class Mob(pg.sprite.Sprite):
         self.rect.y = self.y
         self.collide_with_walls('y')
 
-
+# The gun, shoots a projectile.
 class PewPew(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.pew_pews
@@ -219,34 +219,34 @@ class PewPew(pg.sprite.Sprite):
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
     def update(self):
-        self.collide_with_group(self.game.mobs, True)
+        self.collide_with_group(self.game.magmawall, True)
         self.rect.x -= -self.speed
         # pass
-class Sword(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.weapons
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE/4, TILESIZE))
-        self.image.fill(LIGHTBLUE)
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x
-        self.rect.y = y
-        self.speed = 10
-        print("I created a sword")
-    def collide_with_group(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
-        if hits:
-            if str(hits[0].__class__.__name__) == "Mob":
-                print("you kilt a mob!")
-    def update(self):
-        # self.collide_with_group(self.game.coins, True)
-        self.rect.x = self.game.player1.rect.x+TILESIZE
-        self.rect.y = self.game.player1.rect.y-TILESIZE
-        self.collide_with_group(self.game.mobs, True)
-        if not self.game.player1.weapon_drawn:
-            print("killed the sword")
-            self.kill()
-        # pass
+# class Sword(pg.sprite.Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites, game.weapons
+#         pg.sprite.Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE/4, TILESIZE))
+#         self.image.fill(LIGHTBLUE)
+#         self.rect = self.image.get_rect()
+#         self.x = x
+#         self.y = y
+#         self.rect.x = x
+#         self.rect.y = y
+#         self.speed = 10
+#         print("I created a sword")
+#     def collide_with_group(self, group, kill):
+#         hits = pg.sprite.spritecollide(self, group, kill)
+#         if hits:
+#             if str(hits[0].__class__.__name__) == "Mob":
+#                 print("you kilt a mob!")
+#     def update(self):
+#         # self.collide_with_group(self.game.coins, True)
+#         self.rect.x = self.game.player1.rect.x+TILESIZE
+#         self.rect.y = self.game.player1.rect.y-TILESIZE
+#         self.collide_with_group(self.game.mobs, True)
+#         if not self.game.player1.weapon_drawn:
+#             print("killed the sword")
+#             self.kill()
+#         # pass

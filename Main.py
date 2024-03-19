@@ -30,6 +30,7 @@ class Game:
         pg.display.set_caption(TITLE)
         # setting Game Clock
         self.clock = pg.time.Clock()
+        self.running=True
         self.load_data()
     def load_data(self):
        self.game_folder = path.dirname(__file__)
@@ -68,9 +69,9 @@ class Game:
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'M':
-                    Mob(self, col, row)
-                if tile == 'S':
-                    PowerUp(self, col, row)
+                    Magmawall(self, col, row)
+                # if tile == 'S':
+                #     PowerUp(self, col, row)
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
         self.all_sprites.add(self.player1)
@@ -85,7 +86,7 @@ class Game:
         # Puts walls into the group
         self.walls=pg.sprite.Group()
         self.coins=pg.sprite.Group()
-        self.mobs = pg.sprite.Group()
+        self.magmawall = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
         self.weapons = pg.sprite.Group()
         self.pew_pews = pg.sprite.Group()
@@ -101,12 +102,12 @@ class Game:
                 if tile == 'C':
                     print("a coin at", col, row)
                     Coin(self, col,row)
-                if tile == 'S':
-                    print("a power up at", col, row)
-                    PowerUp(self, col,row)
+                # if tile == 'S':
+                #     print("a power up at", col, row)
+                #     PowerUp(self, col,row)
                 if tile == 'M':
                     print("a mob at", col, row)
-                    Mob(self, col, row)
+                    Magmawall(self, col, row)
         # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
@@ -126,7 +127,7 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
-    
+    # If i have more than 0 in my money bag change to level 2
     def update(self):
         self.all_sprites.update()
         if self.player1.moneybag > 0:
@@ -157,12 +158,20 @@ class Game:
         # Draw all sprites
         self.all_sprites.draw(self.screen)
         pg.display.flip()
+        # Start screen, press any button to move to the game.
     def show_start_screen(self):
         self.screen.fill(BGCOLOR)
-        self.draw_text(self.screen, "This is the start screen", 24, WHITE, WIDTH/2 - 32, 2)
+        self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()
-
+    def show_go_screen(self):
+        if not self.running:
+            return
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the GO screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+# Waits for the key press
     def wait_for_key(self):
         waiting = True
         while waiting:
@@ -173,8 +182,8 @@ class Game:
                     self.quit()
                 if event.type == pg.KEYUP:
                     waiting = False
-                    if event.key == pg.K_e:
-                        self.player.weapon_drawn = False
+                    # if event.key == pg.K_e:
+                    #     self.player.weapon_drawn = False
 
     def events(self):
         # Quit the game when hit x
