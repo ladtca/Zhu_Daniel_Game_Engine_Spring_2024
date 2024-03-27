@@ -39,7 +39,6 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
         if keys[pg.K_e]:
-            print("trying to shoot...")
             self.pew()
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
