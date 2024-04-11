@@ -39,6 +39,8 @@ class Game:
             for line in f:
                 print(line)
                 self.map_data.append(line)
+                self.game_folder = path.dirname(__file__)
+                self.img_folder = path.join(self.game_folder, 'images')
 
     def test_method(self):
         print("I can be called from Sprites...")
@@ -76,7 +78,8 @@ class Game:
         # Puts "player" into "all sprites"
         self.all_sprites.add(self.player1)
         for x in range(10,20):
-            Wall(self, x, 5)       
+            Wall(self, x, 5)  
+
 
 # creates a way to run the game.
     # defines the methow new.

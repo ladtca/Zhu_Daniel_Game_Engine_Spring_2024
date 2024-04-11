@@ -4,8 +4,28 @@
 
 import pygame as pg
 from Settings import *
+from os import path
+
+SPRITESHEET = 'theBell.png'
+
+dir = path.dirname(__file__)
+img_dir = path.join(dir, 'images')
 
 
+# sets up file with multiple images...
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width * 4, height * 4))
+        return image
+    
 #defines a class "player" in the group sprites
 class Player(pg.sprite.Sprite):
 # initiate the size, the color, and where it is.
@@ -43,10 +63,10 @@ class Player(pg.sprite.Sprite):
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
-        if keys[pg.K_f]:
-            if not self.weapon_drawn:
-                Sword(self.game, self.rect.x+TILESIZE, self.rect.y-TILESIZE)
-                self.weapon_drawn = True
+        # if keys[pg.K_f]:
+        #     if not self.weapon_drawn:
+        #         Sword(self.game, self.rect.x+TILESIZE, self.rect.y-TILESIZE)
+        #         self.weapon_drawn = True
     def pew(self):
         p = PewPew(self.game, self.rect.x, self.rect.y)
         print(p.rect.x)
