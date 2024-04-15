@@ -5,6 +5,9 @@ Moving Enemy
 Projectile
 DIfferent levels/maps
 
+Beta:
+Add more of a "story" to the game
+images for the walls and player and enemies
 
 
 
