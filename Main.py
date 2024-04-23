@@ -38,12 +38,15 @@ class Game:
     def load_data(self):
        self.game_folder = path.dirname(__file__)
        self.map_data = []
+       self.img_folder = path.join(self.game_folder, 'images')
+       self.player1_img = pg.image.load(path.join(self.img_folder, 'theBell.png')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
                 self.game_folder = path.dirname(__file__)
                 self.img_folder = path.join(self.game_folder, 'images')
+        
 
     def test_method(self):
         print("I can be called from Sprites...")

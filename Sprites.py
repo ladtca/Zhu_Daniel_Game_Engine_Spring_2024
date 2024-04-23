@@ -12,7 +12,11 @@ dir = path.dirname(__file__)
 img_dir = path.join(dir, 'images')
 
 
-# sets up file with multiple images...
+SPRITESHEET = "theBell.png"
+# needed for animated sprite
+game_folder = path.dirname(__file__)
+img_folder = path.join(game_folder, 'images')
+# needed for animated sprite
 class Spritesheet:
     # utility class for loading and parsing spritesheets
     def __init__(self, filename):
@@ -23,7 +27,7 @@ class Spritesheet:
         image = pg.Surface((width, height))
         image.blit(self.spritesheet, (0, 0), (x, y, width, height))
         # image = pg.transform.scale(image, (width, height))
-        image = pg.transform.scale(image, (width * 4, height * 4))
+        image = pg.transform.scale(image, (width * 1, height * 1))
         return image
     
 #defines a class "player" in the group sprites
@@ -34,8 +38,11 @@ class Player(pg.sprite.Sprite):
         # Initilizes superclass
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
+        self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
+        # needed for animated sprite
+        self.load_images()
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        # self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -45,6 +52,8 @@ class Player(pg.sprite.Sprite):
         self.speed = 600
         self.HITPOINTS = 100
         self.weapon_drawn = False
+        self.current_frame = 0
+        self.walking = False
 
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
@@ -120,6 +129,7 @@ class Player(pg.sprite.Sprite):
 # Update the player,speed and collisons
     def update(self):
         self.get_keys()
+        self.animate()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
@@ -139,6 +149,20 @@ class Player(pg.sprite.Sprite):
         # coin_hits = pg.sprite.spritecollide(self.game.coins, True)
         # if coin_hits:
         #     print("I got a coin")
+    
+    def load_images(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32), 
+                                self.spritesheet.get_image(32,0, 32, 32)]
+    def animate(self):
+        now = pg.time.get_ticks()
+        if now - self.last_update > 350:
+            self.last_update = now
+            self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+            bottom = self.rect.bottom
+            self.image = self.standing_frames[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
+    
        
 # defines a class "wall" in the group Sprites
 class Wall(pg.sprite.Sprite):
@@ -268,4 +292,4 @@ class PewPew(pg.sprite.Sprite):
 #         if not self.game.player1.weapon_drawn:
 #             print("killed the sword")
 #             self.kill()
-#         # pass
+#         # pass  
