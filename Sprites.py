@@ -51,10 +51,10 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 600
         self.HITPOINTS = 100
-        self.weapon_drawn = False
+        # self.weapon_drawn = False
         self.current_frame = 0
         self.walking = False
-
+        self.last_update = 0
     # Game loop, IPO, if key pressed, velocity
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -170,9 +170,10 @@ class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
+        self.game = game 
+        # self.image = pg.Surface((TILESIZE, TILESIZE)) 
+        self.image = self.game.walls_img
+        # self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -292,4 +293,4 @@ class PewPew(pg.sprite.Sprite):
 #         if not self.game.player1.weapon_drawn:
 #             print("killed the sword")
 #             self.kill()
-#         # pass  
+#         # pass

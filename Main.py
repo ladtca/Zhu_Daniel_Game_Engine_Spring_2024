@@ -12,7 +12,7 @@ images for the walls and player and enemies
 
 
 '''
-# Imports pygame as a shorter way to say it, also imports the values from a different tab called "Settings"
+# Imports pygame as a shorter way to say it, also imports the values from a different tab called "Settings" and other files
 import pygame as pg
 from Settings import *
 from random import randint
@@ -40,6 +40,7 @@ class Game:
        self.map_data = []
        self.img_folder = path.join(self.game_folder, 'images')
        self.player1_img = pg.image.load(path.join(self.img_folder, 'theBell.png')).convert_alpha()
+       self.walls_img = pg.image.load(path.join(self.img_folder, 'Wall.jpg')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
