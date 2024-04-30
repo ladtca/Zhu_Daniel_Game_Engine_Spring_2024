@@ -39,7 +39,7 @@ class Game:
        self.game_folder = path.dirname(__file__)
        self.map_data = []
        self.img_folder = path.join(self.game_folder, 'images')
-       self.player1_img = pg.image.load(path.join(self.img_folder, 'theBell.png')).convert_alpha()
+       self.player1_img = pg.image.load(path.join(self.img_folder, 'player.png')).convert_alpha()
        self.walls_img = pg.image.load(path.join(self.img_folder, 'Wall.jpg')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
@@ -162,7 +162,7 @@ class Game:
 
     def draw(self):
         # Fill screen with color
-        self.screen.fill(BGCOLOR)
+        self.screen.fill(WHITE)
         # draw grid
         # self.draw_grid()
         # Draw all sprites
@@ -170,7 +170,7 @@ class Game:
         pg.display.flip()
         # Start screen, press any button to move to the game.
     def show_start_screen(self):
-        self.screen.fill(BGCOLOR)
+        self.screen.fill(GREY)
         self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
         pg.display.flip()
         self.wait_for_key()

@@ -6,17 +6,15 @@ import pygame as pg
 from Settings import *
 from os import path
 
-SPRITESHEET = 'theBell.png'
+SPRITESHEET = 'player.png'
 
 dir = path.dirname(__file__)
 img_dir = path.join(dir, 'images')
 
 
-SPRITESHEET = "theBell.png"
-# needed for animated sprite
+SPRITESHEET = "player.png"
 game_folder = path.dirname(__file__)
 img_folder = path.join(game_folder, 'images')
-# needed for animated sprite
 class Spritesheet:
     # utility class for loading and parsing spritesheets
     def __init__(self, filename):
@@ -39,7 +37,6 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
-        # needed for animated sprite
         self.load_images()
         self.image = pg.Surface((TILESIZE, TILESIZE))
         # self.image.fill(GREEN)
@@ -49,7 +46,7 @@ class Player(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.moneybag = 0
-        self.speed = 600
+        self.speed = 450
         self.HITPOINTS = 100
         # self.weapon_drawn = False
         self.current_frame = 0
@@ -61,17 +58,22 @@ class Player(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.speed  
+            self.walking = True
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.vx = self.speed  
+            self.walking = True
         if keys[pg.K_UP] or keys[pg.K_w]:
             self.vy = -self.speed  
+            self.walking = True
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = self.speed
+            self.walking = True
         if keys[pg.K_e]:
             self.pew()
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.7071
             self.vy *= 0.7071
+
         # if keys[pg.K_f]:
         #     if not self.weapon_drawn:
         #         Sword(self.game, self.rect.x+TILESIZE, self.rect.y-TILESIZE)
@@ -152,7 +154,13 @@ class Player(pg.sprite.Sprite):
     
     def load_images(self):
         self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32), 
-                                self.spritesheet.get_image(32,0, 32, 32)]
+                                self.spritesheet.get_image(64,0, 32, 32)]
+        self.walking_frames = [
+                                self.spritesheet.get_image(0,9, 32, 32),
+                                self.spritesheet.get_image(32,32, 32, 32),
+                                self.spritesheet.get_image(64,32, 32, 32),
+                                self.spritesheet.get_image(96,32, 32, 32),
+                                ]
     def animate(self):
         now = pg.time.get_ticks()
         if now - self.last_update > 350:
@@ -160,6 +168,11 @@ class Player(pg.sprite.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
             bottom = self.rect.bottom
             self.image = self.standing_frames[self.current_frame]
+            self.rect = self.image.get_rect()
+            if not self.walking:
+                self.image = self.standing_frames[self.current_frame]
+            else:
+                self.image = self.walking_frames[self.current_frame]
             self.rect = self.image.get_rect()
             self.rect.bottom = bottom
     
@@ -173,6 +186,7 @@ class Wall(pg.sprite.Sprite):
         self.game = game 
         # self.image = pg.Surface((TILESIZE, TILESIZE)) 
         self.image = self.game.walls_img
+        self.image = pg.transform.scale(self.image, (32, 32))
         # self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.x = x
@@ -265,6 +279,7 @@ class PewPew(pg.sprite.Sprite):
     def update(self):
         self.collide_with_group(self.game.magmawall, True)
         self.rect.x -= -self.speed
+        
         # pass
 # class Sword(pg.sprite.Sprite):
 #     def __init__(self, game, x, y):
