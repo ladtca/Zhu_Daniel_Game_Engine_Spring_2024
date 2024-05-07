@@ -22,6 +22,8 @@ from os import path
 
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
+def distance(pos1, pos2):
+    return ((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)**0.5
 #create/define function "Game"
 class Game:
     # Allows us to assign properties to the class
@@ -41,12 +43,22 @@ class Game:
        self.img_folder = path.join(self.game_folder, 'images')
        self.player1_img = pg.image.load(path.join(self.img_folder, 'player.png')).convert_alpha()
        self.walls_img = pg.image.load(path.join(self.img_folder, 'Wall.jpg')).convert_alpha()
+       self.mob1_img = pg.image.load(path.join(self.img_folder, 'mob.jpg')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
                 self.map_data.append(line)
                 self.game_folder = path.dirname(__file__)
                 self.img_folder = path.join(self.game_folder, 'images')
+    def check_proximity(self):
+        for enemy in self.mob:  # Assuming you have a list of enemies
+            # Calculate distance between player and enemy
+            dist = distance((self.player1.rect.centerx, self.player1.rect.centery),
+                            (enemy.rect.centerx, enemy.rect.centery))
+            # Check if distance is less than a certain threshold
+            if dist < 1 :
+                # Perform desired action (e.g., attack player, trigger event)
+                self.mob_attackplayer == True
         
 
     def test_method(self):
@@ -78,7 +90,7 @@ class Game:
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'M':
-                    Magmawall(self, col, row)
+                    Mob(self, col, row)
                 # if tile == 'S':
                 #     PowerUp(self, col, row)
         self.player1 = Player(self, 100, 100)
@@ -96,7 +108,7 @@ class Game:
         # Puts walls into the group
         self.walls=pg.sprite.Group()
         self.coins=pg.sprite.Group()
-        self.magmawall = pg.sprite.Group()
+        self.mob = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
         self.weapons = pg.sprite.Group()
         self.pew_pews = pg.sprite.Group()
@@ -117,7 +129,7 @@ class Game:
                 #     PowerUp(self, col,row)
                 if tile == 'M':
                     print("a mob at", col, row)
-                    Magmawall(self, col, row)
+                    Mob(self, col, row)
         # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
@@ -139,7 +151,6 @@ class Game:
         sys.exit()
     # If i have more than 0 in my money bag change to level 2
     def update(self):
-        self.all_sprites.update()
         if self.player1.moneybag > 0:
             self.change_level(LEVEL2)
 # Sets the color and size of each tile for the grid.

@@ -6,6 +6,8 @@ import pygame as pg
 from Settings import *
 from os import path
 
+vec =pg.math.Vector2
+
 SPRITESHEET = 'player.png'
 
 dir = path.dirname(__file__)
@@ -122,8 +124,8 @@ class Player(pg.sprite.Sprite):
                 self.moneybag += 1
             if str(hits[0].__class__.__name__) == "PowerUp":
                 "give gun for projectile"
-            if str(hits[0].__class__.__name__) == "Magmawall":
-                print("Collided with wall/ game over")
+            if str(hits[0].__class__.__name__) == "Mob":
+                print("Collided with mob/ game over")
                 self.HITPOINTS += -100
 
 
@@ -142,7 +144,9 @@ class Player(pg.sprite.Sprite):
         self.collide_with_walls('y')
         self.collide_with_group(self.game.coins, True)
         self.collide_with_group(self.game.power_ups, True)
-        self.collide_with_group(self.game.magmawall, False)
+        self.collide_with_group(self.game.mob, False)
+        if self.speed == 0:
+            self.walking = False
 
         if self.HITPOINTS == 0:
             quit()
@@ -157,10 +161,8 @@ class Player(pg.sprite.Sprite):
                                 self.spritesheet.get_image(64,0, 32, 32)]
         self.walking_frames = [
                                 self.spritesheet.get_image(0,9, 32, 32),
-                                self.spritesheet.get_image(32,32, 32, 32),
-                                self.spritesheet.get_image(64,32, 32, 32),
-                                self.spritesheet.get_image(96,32, 32, 32),
-                                ]
+                                self.spritesheet.get_image(32,32, 32, 32)]
+
     def animate(self):
         now = pg.time.get_ticks()
         if now - self.last_update > 350:
@@ -221,43 +223,58 @@ class Coin(pg.sprite.Sprite):
 #         self.rect.x = x * TILESIZE
 #         self.rect.y = y * TILESIZE
 # Makes the mob thingy and creates it size and other characteristics.
-class Magmawall(pg.sprite.Sprite):
+class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.magmawall
+        self.groups = game.all_sprites, game.mob
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        # self.image.fill(RED)
+        self.image = self.game.mob1_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.vx, self.vy = 100, 100
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 0.5
+        self.speed = (4,7)
+        self.health = 5
+        print("created mob at", self.rect.x, self.rect.y)
+    
+    # creates mob + wall collision
     def collide_with_walls(self, dir):
         if dir == 'x':
-            # print('colliding on the x')
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                self.vx *= -1
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
                 self.rect.x = self.x
         if dir == 'y':
-            # print('colliding on the y')
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                self.vy *= -1
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
                 self.rect.y = self.y
-    def update(self):
-        # self.rect.x += 1
-        self.rect.x += TILESIZE * self.speed
-        if self.rect.x > WIDTH-1 or self.rect.x < 1:
-            self.speed *= -1
-        
-        self.rect.x = self.x
-        self.collide_with_walls('x')
-        self.rect.y = self.y
-        self.collide_with_walls('y')
+    
+    # using player location to chase player
+    def chasing(self):
+        if self.rect.x < self.game.player.rect.x:
+            self.vx = 100
+        if self.rect.x > self.game.player.rect.x:
+            self.vx = -100    
+        if self.rect.y < self.game.player.rect.y:
+            self.vy = 100
+        if self.rect.y > self.game.player.rect.y:
+            self.vy = -100
+
+
+    
 
 # The gun, shoots a projectile.
 class PewPew(pg.sprite.Sprite):
@@ -277,7 +294,7 @@ class PewPew(pg.sprite.Sprite):
     def collide_with_group(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
     def update(self):
-        self.collide_with_group(self.game.magmawall, True)
+        self.collide_with_group(self.game.mob, True)
         self.rect.x -= -self.speed
         
         # pass
