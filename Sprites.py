@@ -203,7 +203,8 @@ class Coin(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(YELLOW)
+        self.image = self.game.coins_img
+        self.image = pg.transform.scale(self.image, (32,32))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -231,6 +232,7 @@ class Mob(pg.sprite.Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         # self.image.fill(RED)
         self.image = self.game.mob1_img
+        self.image = pg.transform.scale(self.image, (32, 32))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -238,14 +240,13 @@ class Mob(pg.sprite.Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.speed = (4,7)
-        self.health = 5
-        print("created mob at", self.rect.x, self.rect.y)
     
     # creates mob + wall collision
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
+                print('hit wall')
                 if self.vx > 0:
                     self.x = hits[0].rect.left - self.rect.width
                 if self.vx < 0:
@@ -255,6 +256,7 @@ class Mob(pg.sprite.Sprite):
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
+                print('hit wall')
                 if self.vy > 0:
                     self.y = hits[0].rect.top - self.rect.height
                 if self.vy < 0:

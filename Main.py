@@ -1,4 +1,4 @@
-# This File was created by: Daniel Zhu
+# This File was created by: Daniel Zhu with help of Chatgpt
 '''
 
 Moving Enemy
@@ -44,6 +44,7 @@ class Game:
        self.player1_img = pg.image.load(path.join(self.img_folder, 'player.png')).convert_alpha()
        self.walls_img = pg.image.load(path.join(self.img_folder, 'Wall.jpg')).convert_alpha()
        self.mob1_img = pg.image.load(path.join(self.img_folder, 'mob.jpg')).convert_alpha()
+       self.coins_img = pg.image.load(path.join(self.img_folder, 'portal.png')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
@@ -83,7 +84,7 @@ class Game:
             for col, tile in enumerate(tiles):
                 print(col)
                 if tile == '1':
-                    print("a wall at", row, col)
+                    # print("a wall at", row, col)
                     Wall(self, col, row)
                 # if tile == 'P':
                 #     self.player1 = Player(self, col, row)
@@ -117,7 +118,7 @@ class Game:
             for col, tile in enumerate(tiles):
                 print(col)
                 if tile == '1':
-                    print("a wall at", row, col)
+                    # print("a wall at", row, col)
                     Wall(self, col, row)
                 # if tile == 'P':
                 #     self.player1 = Player(self, col, row)
@@ -130,7 +131,7 @@ class Game:
                 if tile == 'M':
                     print("a mob at", col, row)
                     Mob(self, col, row)
-        # Sets size of "player"
+            # Sets size of "player"
         self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
         self.all_sprites.add(self.player1)
