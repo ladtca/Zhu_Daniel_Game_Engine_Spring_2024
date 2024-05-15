@@ -22,8 +22,6 @@ from os import path
 
 LEVEL1 = "level1.txt"
 LEVEL2 = "level2.txt"
-def distance(pos1, pos2):
-    return ((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)**0.5
 #create/define function "Game"
 class Game:
     # Allows us to assign properties to the class
@@ -51,15 +49,6 @@ class Game:
                 self.map_data.append(line)
                 self.game_folder = path.dirname(__file__)
                 self.img_folder = path.join(self.game_folder, 'images')
-    def check_proximity(self):
-        for enemy in self.mob:  # Assuming you have a list of enemies
-            # Calculate distance between player and enemy
-            dist = distance((self.player1.rect.centerx, self.player1.rect.centery),
-                            (enemy.rect.centerx, enemy.rect.centery))
-            # Check if distance is less than a certain threshold
-            if dist < 1 :
-                # Perform desired action (e.g., attack player, trigger event)
-                self.mob_attackplayer == True
         
 
     def test_method(self):
@@ -86,19 +75,19 @@ class Game:
                 if tile == '1':
                     # print("a wall at", row, col)
                     Wall(self, col, row)
-                # if tile == 'P':
-                #     self.player1 = Player(self, col, row)
+                if tile == 'P':
+                    self.player1 = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
                 # if tile == 'S':
                 #     PowerUp(self, col, row)
-        self.player1 = Player(self, 100, 100)
+        # self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
         self.all_sprites.add(self.player1)
-        for x in range(10,20):
-            Wall(self, x, 5)  
+        # for x in range(10,20):
+        #     Wall(self, x, 5)  
 
 
 # creates a way to run the game.
@@ -120,8 +109,8 @@ class Game:
                 if tile == '1':
                     # print("a wall at", row, col)
                     Wall(self, col, row)
-                # if tile == 'P':
-                #     self.player1 = Player(self, col, row)
+                if tile == 'P':
+                    self.player1 = Player(self, col, row)
                 if tile == 'C':
                     print("a coin at", col, row)
                     Coin(self, col,row)
@@ -132,11 +121,10 @@ class Game:
                     print("a mob at", col, row)
                     Mob(self, col, row)
             # Sets size of "player"
-        self.player1 = Player(self, 100, 100)
+        # self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
-        self.all_sprites.add(self.player1)
-        for x in range(10,20):
-            Wall(self, x, 5)
+        # for x in range(10,20):
+        #     Wall(self, x, 5)
 
 # Run the game
     def run(self):

@@ -5,6 +5,7 @@
 import pygame as pg
 from Settings import *
 from os import path
+from pygame.sprite import Sprite
 
 vec =pg.math.Vector2
 
@@ -31,17 +32,17 @@ class Spritesheet:
         return image
     
 #defines a class "player" in the group sprites
-class Player(pg.sprite.Sprite):
+class Player(Sprite):
 # initiate the size, the color, and where it is.
     def __init__(self, game, x, y):
         self.groups=game.all_sprites
         # Initilizes superclass
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
-        self.load_images()
         self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
         # self.image.fill(GREEN)
+        self.load_images()
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -232,21 +233,23 @@ class Mob(pg.sprite.Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         # self.image.fill(RED)
         self.image = self.game.mob1_img
-        self.image = pg.transform.scale(self.image, (32, 32))
+        self.image = pg.transform.scale(self.image, (32,32))
         self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
+        
         self.vx, self.vy = 100, 100
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
+        # self.x = x * TILESIZE
+        # self.y = y * TILESIZE
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
         self.speed = (4,7)
-    
+        self.health = 5
+
+        print("created mob at", self.rect.x, self.rect.y)
     # creates mob + wall collision
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                print('hit wall')
                 if self.vx > 0:
                     self.x = hits[0].rect.left - self.rect.width
                 if self.vx < 0:
@@ -256,7 +259,6 @@ class Mob(pg.sprite.Sprite):
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                print('hit wall')
                 if self.vy > 0:
                     self.y = hits[0].rect.top - self.rect.height
                 if self.vy < 0:
@@ -265,15 +267,29 @@ class Mob(pg.sprite.Sprite):
                 self.rect.y = self.y
     
     # using player location to chase player
-    def chasing(self):
-        if self.rect.x < self.game.player.rect.x:
-            self.vx = 100
-        if self.rect.x > self.game.player.rect.x:
-            self.vx = -100    
-        if self.rect.y < self.game.player.rect.y:
-            self.vy = 100
-        if self.rect.y > self.game.player.rect.y:
-            self.vy = -100
+    # def chasing(self):
+    #     if self.rect.x < self.game.player.rect.x:
+    #         self.vx = 100
+    #     if self.rect.x > self.game.player.rect.x:
+    #         self.vx = -100    
+    #     if self.rect.y < self.game.player.rect.y:
+    #         self.vy = 100
+    #     if self.rect.y > self.game.player.rect.y:
+    #         self.vy = -100
+    
+    # updates functions inside mob class
+    def update(self):
+        # self.image.blit(self.game.screen, self.pic)
+        # pass
+        self.rect.x += 1
+        # self.chasing()
+        # self.x += self.vx * self.game.dt
+        # self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        self.collide_with_walls('y')
+
 
 
     
