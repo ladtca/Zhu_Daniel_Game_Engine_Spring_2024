@@ -35,17 +35,19 @@ class Spritesheet:
 class Player(Sprite):
 # initiate the size, the color, and where it is.
     def __init__(self, game, x, y):
+        print("sigma part2")
         self.groups=game.all_sprites
         # Initilizes superclass
         pg.sprite.Sprite.__init__(self, self.groups)
+        print("sigma part 3")
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.spritesheet = Spritesheet(path.join(img_folder, SPRITESHEET))
         # self.image.fill(GREEN)
         self.load_images()
         self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
+        # self.x = x
+        # self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.moneybag = 0

@@ -73,9 +73,10 @@ class Game:
             for col, tile in enumerate(tiles):
                 print(col)
                 if tile == '1':
-                    # print("a wall at", row, col)
+                    print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
+                    print("skibidi sigma has spawned")
                     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
@@ -103,13 +104,13 @@ class Game:
         self.weapons = pg.sprite.Group()
         self.pew_pews = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
-            print(row)
             for col, tile in enumerate(tiles):
-                print(col)
+                # print(tile)
                 if tile == '1':
                     # print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
+                    print("skibidi sigma has spawned")
                     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     print("a coin at", col, row)
