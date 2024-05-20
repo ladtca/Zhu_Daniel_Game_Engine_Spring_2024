@@ -1,4 +1,4 @@
-# This File was created by: Daniel Zhu with help of Chatgpt
+# This File was created by: Daniel Zhu
 '''
 
 Moving Enemy
@@ -43,6 +43,7 @@ class Game:
        self.walls_img = pg.image.load(path.join(self.img_folder, 'Wall.jpg')).convert_alpha()
        self.mob1_img = pg.image.load(path.join(self.img_folder, 'mob.jpg')).convert_alpha()
        self.coins_img = pg.image.load(path.join(self.img_folder, 'portal.png')).convert_alpha()
+       self.bullet_img = pg.image.load(path.join(self.img_folder, 'Bullet.jpg')).convert_alpha()
        with open(path.join(self.game_folder, LEVEL1), 'rt') as f:
             for line in f:
                 print(line)
@@ -75,20 +76,19 @@ class Game:
                 if tile == '1':
                     print("a wall at", row, col)
                     Wall(self, col, row)
-                if tile == 'P':
-                    print("skibidi sigma has spawned")
-                    self.player1 = Player(self, col, row)
+                # if tile == 'P':
+                #     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
                 # if tile == 'S':
                 #     PowerUp(self, col, row)
-        # self.player1 = Player(self, 100, 100)
+        self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
         self.all_sprites.add(self.player1)
-        # for x in range(10,20):
-        #     Wall(self, x, 5)  
+        for x in range(10,20):
+            Wall(self, x, 5)  
 
 
 # creates a way to run the game.
@@ -103,15 +103,17 @@ class Game:
         self.power_ups = pg.sprite.Group()
         self.weapons = pg.sprite.Group()
         self.pew_pews = pg.sprite.Group()
+        self.sniper_pew = pg.sprite.Group()
+        self.rifle_pew = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
+            print(row)
             for col, tile in enumerate(tiles):
-                # print(tile)
+                print(col)
                 if tile == '1':
-                    # print("a wall at", row, col)
+                    print("a wall at", row, col)
                     Wall(self, col, row)
-                if tile == 'P':
-                    print("skibidi sigma has spawned")
-                    self.player1 = Player(self, col, row)
+                # if tile == 'P':
+                #     self.player1 = Player(self, col, row)
                 if tile == 'C':
                     print("a coin at", col, row)
                     Coin(self, col,row)
@@ -121,11 +123,12 @@ class Game:
                 if tile == 'M':
                     print("a mob at", col, row)
                     Mob(self, col, row)
-            # Sets size of "player"
-        # self.player1 = Player(self, 100, 100)
+        # Sets size of "player"
+        self.player1 = Player(self, 100, 100)
         # Puts "player" into "all sprites"
-        # for x in range(10,20):
-        #     Wall(self, x, 5)
+        self.all_sprites.add(self.player1)
+        for x in range(10,20):
+            Wall(self, x, 5)
 
 # Run the game
     def run(self):
@@ -141,6 +144,7 @@ class Game:
         sys.exit()
     # If i have more than 0 in my money bag change to level 2
     def update(self):
+        self.all_sprites.update()
         if self.player1.moneybag > 0:
             self.change_level(LEVEL2)
 # Sets the color and size of each tile for the grid.
@@ -168,6 +172,7 @@ class Game:
         # self.draw_grid()
         # Draw all sprites
         self.all_sprites.draw(self.screen)
+        self.player1.draw_text(self.player1.displayed_text, self.player1.font, RED, WIDTH / 2, 50)  # Draw the text
         pg.display.flip()
         # Start screen, press any button to move to the game.
     def show_start_screen(self):
